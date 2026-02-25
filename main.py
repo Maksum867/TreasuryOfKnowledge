@@ -8,15 +8,17 @@ import subprocess
 import webbrowser
 import requests
 import hashlib
+import warnings  # ДОДАНО: Для приховування попереджень
 from io import BytesIO
 import urllib.parse
+from datetime import datetime
 
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
 from selenium import webdriver
 from selenium.webdriver.edge.options import Options
-from selenium.webdriver.edge.service import Service as EdgeService
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
+#from selenium.webdriver.edge.service import Service as EdgeService
+#from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from bs4 import BeautifulSoup
 
 from docx import Document as WordDocument
@@ -25,6 +27,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from plyer import notification
 
 from deep_translator import MicrosoftTranslator, GoogleTranslator
+from docx2pdf import convert
+from readability import Document
+
+# ПРИХОВУЄМО ЧЕРВОНЕ ПОПЕРЕДЖЕННЯ В ТЕРМІНАЛІ
+warnings.filterwarnings("ignore", category=UserWarning, module='requests')
 
 
 class TranslationArchiveApp:
@@ -37,10 +44,9 @@ class TranslationArchiveApp:
 
         self.cancel_event = threading.Event()
 
-        # СЛОВНИК ЛОКАЛІЗАЦІЇ
         self.locales = {
             "uk": {
-                "title": "Скарбниця Знань v3.3 Pro",
+                "title": "Скарбниця Знань v4.0",
                 "placeholder": "Вставте посилання (можна кілька, кожне з нового рядка)...",
                 "status_wait": "Очікування посилань...",
                 "btn_digitize": "ОЦИФРУВАТИ В АРХІВ",
@@ -51,41 +57,53 @@ class TranslationArchiveApp:
                 "btn_choose": "Обрати",
                 "font_lbl": "🖋️ Шрифт:",
                 "size_lbl": "📏 Розмір тексту:",
+                "format_lbl": "📄 Формат збереження:",
+                "engine_lbl": "🤖 Рушій перекладу:",
                 "theme_lbl": "🌓 Тема інтерфейсу:",
                 "theme_dark": "Темний режим",
                 "ui_lang_lbl": "🌍 Мова інтерфейсу:",
                 "target_lang_lbl": "🎯 Перекладати статтю на:",
 
-                "setting_read_time": "⏱ Додавати орієнтовний час читання у Word",
-                "setting_bilingual": "📖 Двомовний режим (Зберігати оригінал + переклад)",
+                "additional_features_lbl": "🛠 Додаткові функції:",
+                "setting_read_time": "⏱ Додавати орієнтовний час читання",
+                "setting_bilingual": "📖 Двомовний режим (Оригінал + переклад)",
                 "setting_auto_open": "🚀 Автоматично відкривати документ після створення",
+                "setting_images": "🖼️ Завантажувати зображення (вимкніть для швидкості)",
+                "setting_toc": "📑 Додавати автоматичний Зміст (для довгих статей)",
+                "setting_metadata": "🔗 Додавати посилання на джерело та дату в кінці файлу",
 
                 "btn_about": "ℹ️ Про додаток",
                 "about_title": "Про додаток",
-                "about_desc": "Автоматизований парсинг веб-статей з картинками\nта конвертація у Word-документи з перекладом.\nСтворено з душею для комфортного читання без меж.",
-                "btn_changelog": "Історія версій",
+                # НОВИЙ ОПИС ПРОГРАМИ
+                "about_desc": "Цей додаток створений для вільного доступу до інформації без кордонів та обмежень.\n\nОсновна мета «Скарбниці Знань» — дати вам змогу читати статті, журнали та новини, які заблоковані у вашій країні, приховані за пейволом (paywall) або вимагають платної підписки, на яку у вас немає коштів.\n\nПрограма алгоритмічно «витягує» прихований текст з сайту, перекладає його на зручну для вас мову та зберігає у вигляді чистого, акуратного документа на вашому комп'ютері. Знання мають бути безкоштовними та доступними для кожного.",
+                "btn_features": "Основні функції ⭐️",  # ЗМІНЕНО КНОПКУ
                 "btn_how_it_works": "Як це працює ⚙️",
                 "btn_donate": "☕ Підтримати автора",
 
                 "how_it_works_title": "Механізм роботи",
-                "how_it_works_text": "Розробляючи цей інструмент, я ставив за мету зробити інтернет чистішим.\n\n🔍 Парсинг (Видобуток контенту):\nПрограма відкриває невидиме вікно браузера. Головна фішка — вона примусово вимикає JavaScript на сайті. Це миттєво 'вбиває' 90% рекламних банерів, вікон 'Прийміть кукі' та штучних блокувань контенту (paywalls). Залишається лише чистий текст та зображення.\n\n🧠 Аналіз структури:\nАлгоритм сканує сторінку, відкидаючи меню та коментарі, знаходить заголовки (H2/H3), списки та абзаци, щоб зберегти логіку автора.\n\n🌍 Переклад та Збірка:\nКожен абзац обережно пропускається через API перекладача. Після цього програма буквально 'зшиває' перекладений текст і завантажені картинки у красивий, відформатований Word-документ, готовий до друку чи читання з екрану.",
+                "how_it_works_text": "Розробляючи цей інструмент, я ставив за мету зробити інтернет чистішим.\n\n🔍 Парсинг (Видобуток контенту):\nПрограма використовує 'Режим читання' (Readability) для точного виділення статті, відкидаючи меню та рекламу.\n\n🧠 Аналіз структури:\nАлгоритм сканує сторінку, знаходить заголовки (H2/H3), списки та абзаци. Якщо стаття велика, автоматично генерується Зміст для зручної навігації.\n\n🌍 Переклад та Збірка:\nКожен абзац обережно пропускається через API обраного перекладача. Після цього програма буквально 'зшиває' текст і картинки у красивий документ.",
 
                 "premium_title": "Доступ до Premium",
-                "premium_text": "Вітаю, шукачу ексклюзиву! 🎩\n\nНіякого 'Premium' у цьому додатку немає і, мабуть, ніколи не буде.\n\nМожливо, колись світ і змусить мене повісити тут цінник чи ввести якусь підписку, але це зовсім не в моїй натурі. Я створював цей інструмент для того, щоб він приносив користь і робив знання доступними, а не для того, щоб витягувати гроші з людей.\n\nТому — видихай! Користуйся на здоров'я, поки є нагода, розширюй кругозір і нехай ця програма служить тобі вірою і правдою.\n\n(Але якщо вона дійсно зекономила тобі купу часу або просто підняла настрій — ти завжди можеш пригостити мене кавою. Кнопка підтримки скромно чекає на тебе в розділі 'Про додаток' 😉).",
+                "premium_text": "Вітаю, шукачу ексклюзиву! 🎩\n\nНіякого 'Premium' у цьому додатку немає і, мабуть, ніколи не буде.\n\nКористуйся на здоров'я, розширюй кругозір і нехай ця програма служить тобі вірою і правдою.\n\n(Але якщо вона дійсно зекономила тобі купу часу — ти завжди можеш пригостити мене кавою 😉).",
 
-                "changelog_title": "Changelog",
-                "changelog_text": "v3.3 Pro:\n- Додано нові налаштування (Час читання, Двомовний режим, Авто-відкриття)\n- Розширено розділ 'Про додаток'\n- Додано приховану 'Premium' пасхалку\n\nv3.2 Pro:\n- Пакетна обробка (кілька посилань одночасно)\n- Збереження структури (заголовки h2/h3, списки)\n- Система кешування та сповіщення",
+                "features_title": "Можливості додатку",  # ЗМІНЕНО ЗАГОЛОВОК
+                "features_text": "Повний перелік функцій Скарбниці Знань:\n\n🔹 Обхід блокувань та пейволів (читання платних статей безкоштовно)\n🔹 Автоматичний переклад (Пріоритет Google або Microsoft на вибір)\n🔹 Збереження файлів у форматах DOCX та ідеальному PDF\n🔹 Інтелектуальний 'Режим читання' — автоматичне видалення реклами, банерів та меню з сайтів\n🔹 Автоматична генерація Змісту для великих статей\n🔹 Можливість зберегти статтю без картинок (Тільки текст)\n🔹 Двомовний режим (оригінал + переклад по абзацах)\n🔹 Оцінка орієнтовного часу читання статті\n🔹 Збереження оригінального посилання та дати створення\n🔹 Підтримка темної та світлої теми інтерфейсу",
                 "btn_back": "Повернутися",
+
+                "status_single_start": "🌐 Завантаження та обробка статті...",
                 "status_magic": "🌐 Старт пакетної обробки (Стаття {} з {})...",
                 "status_progress": "📜 Обробка {} з елементів...",
                 "status_success": "✅ Усі документи успішно збережено!",
                 "status_error": "❌ Помилка обробки",
                 "status_cancelled": "🛑 Процес скасовано",
+                "status_pdf": "📄 Конвертація у PDF...",
                 "msg_error_txt": "Текст або контент не знайдено.",
-                "msg_invalid_url": "Знайдено некоректне посилання. Перевірте ввід."
+                "msg_invalid_url": "Знайдено некоректне посилання. Перевірте ввід.",
+                "doc_toc_title": "--- ЗМІСТ ---",
+                "metadata_text": "\n\n---\n🔗 Джерело: {}\n📅 Дата збереження: {}"
             },
             "en": {
-                "title": "Treasury of Knowledge v3.3 Pro",
+                "title": "Treasury of Knowledge v4.0",
                 "placeholder": "Paste URLs here (multiple allowed, one per line)...",
                 "status_wait": "Waiting for URLs...",
                 "btn_digitize": "DIGITIZE TO ARCHIVE",
@@ -96,38 +114,50 @@ class TranslationArchiveApp:
                 "btn_choose": "Browse",
                 "font_lbl": "🖋️ Font Family:",
                 "size_lbl": "📏 Text Size:",
+                "format_lbl": "📄 Save Format:",
+                "engine_lbl": "🤖 Translation Engine:",
                 "theme_lbl": "🌓 Interface Theme:",
                 "theme_dark": "Dark Mode",
                 "ui_lang_lbl": "🌍 Interface Language:",
                 "target_lang_lbl": "🎯 Translate article to:",
 
-                "setting_read_time": "⏱ Add estimated reading time to Word",
-                "setting_bilingual": "📖 Bilingual Mode (Save Original + Translation)",
+                "additional_features_lbl": "🛠 Additional Features:",
+                "setting_read_time": "⏱ Add estimated reading time",
+                "setting_bilingual": "📖 Bilingual Mode (Original + Translation)",
                 "setting_auto_open": "🚀 Auto-open document after creation",
+                "setting_images": "🖼️ Download images (turn off for speed)",
+                "setting_toc": "📑 Add automatic Table of Contents",
+                "setting_metadata": "🔗 Add source URL and date to the end of document",
 
                 "btn_about": "ℹ️ About",
                 "about_title": "About Application",
-                "about_desc": "Automated web scraping of articles with images\nand converting them into Word documents with translation.\nMade with soul for comfortable reading.",
-                "btn_changelog": "Version History",
+                # НОВИЙ ОПИС ПРОГРАМИ (Англ)
+                "about_desc": "This app is created for free access to information without borders and restrictions.\n\nThe main goal of 'Treasury of Knowledge' is to let you read articles, journals, and news that are geo-blocked in your country, hidden behind a paywall, or require a paid subscription you cannot afford.\n\nThe program algorithmically extracts the hidden text, translates it into your preferred language, and saves it as a clean document on your PC. Knowledge should be free and accessible to everyone.",
+                "btn_features": "Core Features ⭐️",  # ЗМІНЕНО КНОПКУ
                 "btn_how_it_works": "How it works ⚙️",
                 "btn_donate": "☕ Support Author",
 
                 "how_it_works_title": "How It Works",
-                "how_it_works_text": "The goal was to make the internet cleaner.\n\n🔍 Scraping:\nA hidden browser opens and turns off JavaScript. This kills 90% of ads, cookie popups, and paywalls, leaving only clean text.\n\n🧠 Structure Analysis:\nIt scans for H2/H3 headings, lists, and paragraphs, ignoring menus and footers.\n\n🌍 Translation & Assembly:\nEach paragraph is translated and stitched together with downloaded images into a beautifully formatted Word document.",
+                "how_it_works_text": "🔍 Scraping:\nA hidden browser opens and uses 'Reader Mode' to extract only the pure article, ignoring ads.\n\n🧠 Structure Analysis:\nIt scans for headings, lists, and paragraphs. Automatically generates a Table of Contents for long reads.\n\n🌍 Translation & Assembly:\nEach paragraph is translated and stitched together into a beautiful document.",
 
                 "premium_title": "Premium Access",
-                "premium_text": "Greetings, seeker of exclusivity! 🎩\n\nThere is no 'Premium' in this app, and probably never will be.\n\nMaybe someday the world will force me to put a price tag on this, but that's not in my nature. I created this tool to be useful and make knowledge accessible, not to drain money.\n\nSo breathe out! Use it freely while you can. Expand your horizons, and let this program serve you well.\n\n(But if it really saved you a lot of time or just cheered you up, you can always buy me a coffee. The support button is modestly waiting for you in the 'About' section 😉).",
+                "premium_text": "Greetings, seeker of exclusivity! 🎩\n\nThere is no 'Premium' in this app, and probably never will be.\n\nUse it freely while you can. Expand your horizons, and let this program serve you well.",
 
-                "changelog_title": "Changelog",
-                "changelog_text": "v3.3 Pro:\n- Added new settings (Read Time, Bilingual, Auto-open)\n- Expanded 'About' section\n- Added hidden 'Premium' easter egg\n\nv3.2 Pro:\n- Batch processing (multiple URLs)\n- Structural formatting (h2/h3, lists)",
+                "features_title": "App Features",  # ЗМІНЕНО ЗАГОЛОВОК
+                "features_text": "Full list of Treasury of Knowledge features:\n\n🔹 Bypass geo-blocks and paywalls (read paid articles for free)\n🔹 Auto-translation (Google or Microsoft priority choice)\n🔹 Save files in DOCX and perfect PDF formats\n🔹 Intelligent 'Reader Mode' — removes ads, banners, and menus\n🔹 Auto-generates Table of Contents for long reads\n🔹 Option to save without images (Text only mode)\n🔹 Bilingual mode (original + translation by paragraph)\n🔹 Estimated reading time calculator\n🔹 Source URL and date saved metadata\n🔹 Dark and Light interface themes",
                 "btn_back": "Go Back",
+
+                "status_single_start": "🌐 Downloading and processing article...",
                 "status_magic": "🌐 Starting batch process (Article {} of {})...",
                 "status_progress": "📜 Processing element {} of {}...",
                 "status_success": "✅ All documents saved successfully!",
                 "status_error": "❌ Processing error",
                 "status_cancelled": "🛑 Process cancelled",
+                "status_pdf": "📄 Converting to PDF...",
                 "msg_error_txt": "Text or content not found.",
-                "msg_invalid_url": "Invalid URL found. Please check your input."
+                "msg_invalid_url": "Invalid URL found. Please check your input.",
+                "doc_toc_title": "--- TABLE OF CONTENTS ---",
+                "metadata_text": "\n\n---\n🔗 Source: {}\n📅 Date saved: {}"
             }
         }
 
@@ -168,12 +198,17 @@ class TranslationArchiveApp:
             "save_path": default_path,
             "font_family": "Georgia",
             "font_size": 16,
+            "output_format": "docx",
+            "translation_engine": "Google Translator",
             "theme": "dark",
             "ui_language": "uk",
             "target_lang_name": "Українська",
             "add_read_time": True,
             "bilingual_mode": False,
-            "auto_open": True
+            "auto_open": True,
+            "download_images": True,
+            "add_toc": True,
+            "add_metadata": True
         }
         if os.path.exists(self.config_file):
             try:
@@ -301,6 +336,12 @@ class TranslationArchiveApp:
         target_combo.set(self.temp_state["target_lang_name"])
         target_combo.pack(anchor="w", pady=5)
 
+        ctk.CTkLabel(scroll, text=self.t("engine_lbl"), font=("Inter", 16, "bold")).pack(anchor="w", pady=(10, 0))
+        engine_combo = ctk.CTkComboBox(scroll, values=["Google Translator", "Microsoft Translator"], width=300,
+                                       command=lambda v: self.temp_state.update({"translation_engine": v}))
+        engine_combo.set(self.temp_state.get("translation_engine", "Google Translator"))
+        engine_combo.pack(anchor="w", pady=5)
+
         ctk.CTkLabel(scroll, text=self.t("path_lbl"), font=("Inter", 16, "bold")).pack(anchor="w", pady=(10, 0))
         path_f = ctk.CTkFrame(scroll, fg_color="transparent")
         path_f.pack(fill="x", pady=5)
@@ -314,6 +355,12 @@ class TranslationArchiveApp:
         f_combo.set(self.temp_state["font_family"])
         f_combo.pack(anchor="w", pady=5)
 
+        ctk.CTkLabel(scroll, text=self.t("format_lbl"), font=("Inter", 16, "bold")).pack(anchor="w", pady=(10, 0))
+        format_combo = ctk.CTkComboBox(scroll, values=["docx", "pdf"], width=300,
+                                       command=lambda v: self.temp_state.update({"output_format": v}))
+        format_combo.set(self.temp_state.get("output_format", "docx"))
+        format_combo.pack(anchor="w", pady=5)
+
         size_head = ctk.CTkFrame(scroll, fg_color="transparent")
         size_head.pack(fill="x", pady=(10, 0))
         ctk.CTkLabel(size_head, text=self.t("size_lbl"), font=("Inter", 16, "bold")).pack(side="left")
@@ -325,7 +372,8 @@ class TranslationArchiveApp:
         s_slider.set(self.temp_state["font_size"])
         s_slider.pack(fill="x", pady=5)
 
-        ctk.CTkLabel(scroll, text="🛠 Додаткові функції:", font=("Inter", 16, "bold"), text_color=self.accent_gold).pack(
+        ctk.CTkLabel(scroll, text=self.t("additional_features_lbl"), font=("Inter", 16, "bold"),
+                     text_color=self.accent_gold).pack(
             anchor="w", pady=(20, 5))
 
         sw_read_time = ctk.CTkSwitch(scroll, text=self.t("setting_read_time"),
@@ -334,11 +382,29 @@ class TranslationArchiveApp:
         if self.temp_state.get("add_read_time", True): sw_read_time.select()
         sw_read_time.pack(anchor="w", pady=5)
 
+        sw_toc = ctk.CTkSwitch(scroll, text=self.t("setting_toc"),
+                               command=lambda: self.temp_state.update({"add_toc": sw_toc.get()}),
+                               progress_color=self.accent_gold)
+        if self.temp_state.get("add_toc", True): sw_toc.select()
+        sw_toc.pack(anchor="w", pady=5)
+
+        sw_metadata = ctk.CTkSwitch(scroll, text=self.t("setting_metadata"),
+                                    command=lambda: self.temp_state.update({"add_metadata": sw_metadata.get()}),
+                                    progress_color=self.accent_gold)
+        if self.temp_state.get("add_metadata", True): sw_metadata.select()
+        sw_metadata.pack(anchor="w", pady=5)
+
         sw_bilingual = ctk.CTkSwitch(scroll, text=self.t("setting_bilingual"),
                                      command=lambda: self.temp_state.update({"bilingual_mode": sw_bilingual.get()}),
                                      progress_color=self.accent_gold)
         if self.temp_state.get("bilingual_mode", False): sw_bilingual.select()
         sw_bilingual.pack(anchor="w", pady=5)
+
+        sw_images = ctk.CTkSwitch(scroll, text=self.t("setting_images"),
+                                  command=lambda: self.temp_state.update({"download_images": sw_images.get()}),
+                                  progress_color=self.accent_gold)
+        if self.temp_state.get("download_images", True): sw_images.select()
+        sw_images.pack(anchor="w", pady=5)
 
         sw_auto_open = ctk.CTkSwitch(scroll, text=self.t("setting_auto_open"),
                                      command=lambda: self.temp_state.update({"auto_open": sw_auto_open.get()}),
@@ -357,8 +423,7 @@ class TranslationArchiveApp:
                                   command=self.show_about_screen)
         about_btn.pack(pady=(30, 10))
 
-        # ПАСХАЛКА: Прихована кнопка в самому низу
-        hidden_premium = ctk.CTkButton(scroll, text="v3.3 👑", fg_color="transparent",
+        hidden_premium = ctk.CTkButton(scroll, text="v4.0 👑", fg_color="transparent",
                                        text_color="gray30", hover_color="#2d2d2d", font=("Inter", 12),
                                        command=self.show_premium_joke)
         hidden_premium.pack(pady=(10, 20))
@@ -385,8 +450,11 @@ class TranslationArchiveApp:
                      text_color=self.accent_gold).pack(pady=(60, 10))
         ctk.CTkLabel(self.main_container, text="🏛️", font=("Arial", 60)).pack(pady=5)
 
-        desc = ctk.CTkLabel(self.main_container, text=self.t("about_desc"), font=("Inter", 18), justify="center")
-        desc.pack(pady=15)
+        desc_box = ctk.CTkTextbox(self.main_container, width=750, height=180, font=("Inter", 15),
+                                  wrap="word", fg_color="transparent")
+        desc_box.pack(pady=10)
+        desc_box.insert("1.0", self.t("about_desc"))
+        desc_box.configure(state="disabled")
 
         buttons_frame1 = ctk.CTkFrame(self.main_container, fg_color="transparent")
         buttons_frame1.pack(pady=10)
@@ -395,9 +463,10 @@ class TranslationArchiveApp:
                                 fg_color="#2980b9", hover_color="#3498db", command=self.show_how_it_works_screen)
         how_btn.pack(side="left", padx=10)
 
-        changelog_btn = ctk.CTkButton(buttons_frame1, text=self.t("btn_changelog"), height=45, width=220,
-                                      corner_radius=15, fg_color=self.accent_green, command=self.show_changelog_screen)
-        changelog_btn.pack(side="right", padx=10)
+        # ТУТ КНОПКУ ЗМІНЕНО НА "ФУНКЦІЇ"
+        features_btn = ctk.CTkButton(buttons_frame1, text=self.t("btn_features"), height=45, width=220,
+                                     corner_radius=15, fg_color=self.accent_green, command=self.show_features_screen)
+        features_btn.pack(side="right", padx=10)
 
         donate_btn = ctk.CTkButton(self.main_container, text=self.t("btn_donate"), height=45, width=220,
                                    corner_radius=15, fg_color="#d35400", hover_color="#e67e22",
@@ -418,17 +487,18 @@ class TranslationArchiveApp:
         textbox.insert("1.0", self.t("how_it_works_text"))
         textbox.configure(state="disabled")
 
-    def show_changelog_screen(self):
+    # ТУТ ФУНКЦІЮ ЗМІНЕНО ДЛЯ ВІДОБРАЖЕННЯ СПИСКУ ФУНКЦІЙ
+    def show_features_screen(self):
         self.clear_screen()
         back_btn = ctk.CTkButton(self.main_container, text="←", width=50, height=50, fg_color="transparent",
                                  text_color=self.accent_gold, font=("Arial", 40, "bold"),
                                  command=self.show_about_screen)
         back_btn.place(relx=0.07, rely=0.07, anchor="center")
-        ctk.CTkLabel(self.main_container, text=self.t("changelog_title"), font=("Georgia", 34, "bold"),
+        ctk.CTkLabel(self.main_container, text=self.t("features_title"), font=("Georgia", 34, "bold"),
                      text_color=self.accent_gold).pack(pady=(80, 20))
-        textbox = ctk.CTkTextbox(self.main_container, width=700, height=400, font=("Inter", 16))
+        textbox = ctk.CTkTextbox(self.main_container, width=750, height=400, font=("Inter", 16), wrap="word")
         textbox.pack(pady=20)
-        textbox.insert("1.0", self.t("changelog_text"))
+        textbox.insert("1.0", self.t("features_text"))
         textbox.configure(state="disabled")
 
     def toggle_temp_theme(self):
@@ -446,15 +516,31 @@ class TranslationArchiveApp:
         if not text or len(text.strip()) < 5: return text
         target_name = self.state.get("target_lang_name", "Українська")
         target_code = self.translation_languages.get(target_name, "uk")
-        try:
-            return MicrosoftTranslator(target=target_code).translate(text)
-        except:
+
+        # ЛОГІКА ПЕРЕКЛАДАЧА: ПРІОРИТЕТ ЗІ СТРАХОВКОЮ
+        engine = self.state.get("translation_engine", "Google Translator")
+
+        if engine == "Microsoft Translator":
             try:
+                # Пріоритет: Microsoft
+                return MicrosoftTranslator(target=target_code).translate(text)
+            except:
+                try:
+                    # Страховка: Google
+                    return GoogleTranslator(source='auto', target=target_code).translate(text)
+                except:
+                    return text
+        else:
+            try:
+                # Пріоритет: Google
                 return GoogleTranslator(source='auto', target=target_code).translate(text)
             except:
-                return text
+                try:
+                    # Страховка: Microsoft
+                    return MicrosoftTranslator(target=target_code).translate(text)
+                except:
+                    return text
 
-    # ВІДНОВЛЕНА ФУНКЦІЯ!
     def open_saved_file(self, path):
         try:
             if platform.system() == 'Darwin':
@@ -487,39 +573,58 @@ class TranslationArchiveApp:
         driver = None
         try:
             options = Options()
+            # Поки що залишаємо браузер видимим, щоб ти бачив, що відбувається
             options.add_argument("--headless=new")
             options.add_argument("--disable-gpu")
+
+            # ОСЬ ВІН - ТОЙ САМИЙ КОРОТКИЙ РЯДОК, ЯКИЙ ВИМИКАЄ JAVASCRIPT:
             options.add_experimental_option("prefs", {"profile.managed_default_content_settings.javascript": 2})
 
             try:
-                service = EdgeService(EdgeChromiumDriverManager().install())
-                driver = webdriver.Edge(service=service, options=options)
-            except Exception as wm_error:
-                print(f"Fallback to local driver: {wm_error}")
+                # Сучасний запуск браузера без зайвих милиць
                 driver = webdriver.Edge(options=options)
+            except Exception as e:
+                raise Exception(f"Помилка запуску Edge: {e}")
 
             total_urls = len(urls)
+            is_single_url = (total_urls == 1)
 
             for index, url in enumerate(urls):
                 if self.cancel_event.is_set(): break
 
-                batch_status = self.t("status_magic").format(index + 1, total_urls)
-                self.root.after(0, self.update_status, batch_status)
+                if is_single_url:
+                    current_status = self.t("status_single_start")
+                else:
+                    current_status = self.t("status_magic").format(index + 1, total_urls)
 
+                self.root.after(0, self.update_status, current_status)
+
+                # Заходимо на сайт (JS вимкнено, тому блокувальник не спрацює)
                 driver.get(url)
+
+                # Чекаємо 2 секунди (цього достатньо, бо важкі скрипти не вантажаться)
                 time.sleep(2)
 
+                # Одразу читаємо чистий текст
+                doc_readability = Document(driver.page_source)
+
+                driver.get(url)
+                time.sleep(5)
+
+                # Беремо весь код сторінки без Режиму читання
                 soup = BeautifulSoup(driver.page_source, "lxml")
-                h1 = soup.find('h1') or soup.find('title')
-                title = self.translate_text(h1.get_text().strip()) if h1 else f"Архівна стаття {index + 1}"
 
-                main_body = soup.find('article') or soup.find('div', class_=re.compile(
-                    'ArticleBody|content|body|post')) or soup
+                # Шукаємо заголовок
+                title_tag = soup.find('title')
+                extracted_title = title_tag.get_text() if title_tag else ""
+                title = self.translate_text(
+                    extracted_title.strip()) if extracted_title else f"Архівна стаття {index + 1}"
 
-                elements = main_body.find_all(['p', 'img', 'h2', 'h3', 'h4', 'li', 'blockquote'])
+                elements = soup.find_all(['p', 'img', 'h2', 'h3', 'h4', 'li', 'blockquote'])
 
                 content_list = []
                 total_words = 0
+                download_images = self.state.get("download_images", True)
 
                 for el in elements:
                     if el.name in ['p', 'li', 'blockquote', 'h2', 'h3', 'h4']:
@@ -527,7 +632,7 @@ class TranslationArchiveApp:
                         if len(txt) > 20 and "cookie" not in txt.lower():
                             content_list.append({"type": el.name, "data": txt})
                             total_words += len(txt.split())
-                    elif el.name == 'img':
+                    elif el.name == 'img' and download_images:
                         img_url = el.get('src') or el.get('data-src')
                         if img_url and img_url.startswith('http'):
                             content_list.append({"type": "img", "data": img_url})
@@ -536,6 +641,7 @@ class TranslationArchiveApp:
                     continue
 
                 doc = WordDocument()
+
                 t_p = doc.add_paragraph()
                 t_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                 t_run = t_p.add_run(title)
@@ -550,6 +656,32 @@ class TranslationArchiveApp:
                     rt_run.font.color.rgb = doc.styles['Normal'].font.color.rgb
                     rt_run.font.size = Pt(12)
 
+                if self.state.get("add_toc", True):
+                    headings = [item for item in content_list if item["type"] in ['h2', 'h3', 'h4']]
+                    if headings:
+                        doc.add_paragraph()
+                        toc_title_p = doc.add_paragraph()
+                        toc_title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        toc_title_run = toc_title_p.add_run(self.t("doc_toc_title"))
+                        toc_title_run.bold, toc_title_run.font.name = True, self.state["font_family"]
+
+                        for h in headings:
+                            if self.cancel_event.is_set(): return
+
+                            translated_h = self.translate_text(h["data"])
+                            h["translated_data"] = translated_h
+
+                            level = int(h["type"][1])
+                            indent = Inches((level - 2) * 0.3)
+
+                            toc_p = doc.add_paragraph()
+                            toc_p.paragraph_format.left_indent = indent
+                            toc_run = toc_p.add_run(f"• {translated_h}")
+                            toc_run.font.name = self.state["font_family"]
+                            toc_run.font.size = Pt(self.state["font_size"] - 2)
+
+                        doc.add_paragraph()
+
                 total_elements = len(content_list)
                 url_hash = hashlib.md5(url.encode()).hexdigest()
                 cache_file = os.path.join(self.cache_dir, f"{url_hash}.json")
@@ -563,7 +695,9 @@ class TranslationArchiveApp:
                     self.root.after(0, self.progress_bar.set, (i + 1) / total_elements)
 
                     if item["type"] in ['p', 'li', 'blockquote', 'h2', 'h3', 'h4']:
-                        translated = self.translate_text(item["data"])
+                        translated = item.get("translated_data")
+                        if not translated:
+                            translated = self.translate_text(item["data"])
 
                         cached_data.append({"type": item["type"], "text": translated})
                         with open(cache_file, "w", encoding="utf-8") as f:
@@ -607,7 +741,15 @@ class TranslationArchiveApp:
                         except Exception:
                             pass
 
-                    time.sleep(0.1)
+                if self.state.get("add_metadata", True):
+                    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    meta_p = doc.add_paragraph()
+                    meta_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                    meta_text = self.t("metadata_text").format(url, current_date)
+                    meta_run = meta_p.add_run(meta_text)
+                    meta_run.font.size = Pt(10)
+                    meta_run.font.color.rgb = doc.styles['Normal'].font.color.rgb
+                    meta_run.italic = True
 
                 safe_title = re.sub(r'[\\/:*?"<>|]', "", title)[:80]
                 base_path = os.path.join(self.state["save_path"], safe_title)
@@ -625,12 +767,24 @@ class TranslationArchiveApp:
                 if os.path.exists(cache_file):
                     os.remove(cache_file)
 
+                final_path = full_path
+                if self.state.get("output_format") == "pdf":
+                    pdf_path = full_path.replace(".docx", ".pdf")
+                    self.root.after(0, self.update_status, self.t("status_pdf"), self.accent_gold)
+                    try:
+                        convert(full_path, pdf_path)
+                        if os.path.exists(full_path):
+                            os.remove(full_path)
+                        final_path = pdf_path
+                    except Exception as e:
+                        print(f"Помилка конвертації PDF: {e}")
+
                 if self.state.get("auto_open", True):
-                    self.open_saved_file(full_path)
+                    self.open_saved_file(final_path)
 
             if not self.cancel_event.is_set():
                 self.root.after(0, self.update_status, self.t("status_success"), self.accent_green)
-                self.show_system_notification("Скарбниця Знань", "Пакетну обробку успішно завершено!")
+                self.show_system_notification("Скарбниця Знань", "Обробку успішно завершено!")
 
         except Exception as e:
             if not self.cancel_event.is_set():
