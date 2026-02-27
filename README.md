@@ -1,236 +1,181 @@
 
 
-# 📜 Treasury of Knowledge / Скарбниця Знань
+```markdown
+# 📜 Treasury of Knowledge
 
----
+### *Скарбниця Знань*
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Windows%20|%20macOS%20|%20Linux-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-4.0-gold?style=for-the-badge)
+**Break paywalls. Bypass geo-blocks. Translate. Save. Own your knowledge.**
 
-**🏛️ Read any article. In any language. Without restrictions.**
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-5.0_Ultimate-gold?style=for-the-badge)](#)
+[![Windows](https://img.shields.io/badge/OS-Windows_10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](#)
+[![macOS](https://img.shields.io/badge/OS-macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](#)
 
-**🏛️ Читайте будь-яку статтю. Будь-якою мовою. Без обмежень.**
+<br/>
 
-[English](#-english) • [Українська](#-українська)
+<img src="assets/screenshot.png" alt="Treasury of Knowledge — App Screenshot" width="720"/>
+
+<br/>
+
+*One click. Any article. Any language. Yours forever.*
 
 </div>
 
----
-
-## 🇬🇧 English
-
-### 📖 What is this?
-
-**Treasury of Knowledge** is a desktop application that gives you free access to information without borders and restrictions.
-
-It lets you read articles, journals, and news that are:
-- 🚫 **Geo-blocked** in your country
-- 💰 **Hidden behind a paywall** (requiring paid subscriptions)
-- 🌐 **Written in a language** you don't understand
-
-The program algorithmically extracts the hidden text from websites, translates it into your preferred language, and saves it as a clean, beautifully formatted document on your computer.
-
-> **Knowledge should be free and accessible to everyone.**
+<br/>
 
 ---
 
-### ✨ Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔓 **Paywall & Geo-block Bypass** | Read paid and restricted articles for free |
-| 🌍 **Auto-Translation** | Google Translator or Microsoft Translator (with automatic fallback) |
-| 📄 **DOCX & PDF Export** | Save articles in professional document formats |
-| 🧹 **Intelligent Reader Mode** | Automatically removes ads, banners, pop-ups, and navigation menus |
-| 📑 **Auto Table of Contents** | Generates a clickable TOC for long articles |
-| 📖 **Bilingual Mode** | Side-by-side original + translation paragraph by paragraph |
-| 🖼️ **Image Download** | Embeds article images (or skip them for faster processing) |
-| ⏱️ **Reading Time Estimate** | Shows estimated reading time for each article |
-| 📦 **Batch Processing** | Process multiple URLs at once (one per line) |
-| 🔗 **Source Metadata** | Saves original URL and date at the end of the document |
-| 🌓 **Dark & Light Themes** | Comfortable UI for any lighting condition |
-| 🌐 **Bilingual UI** | Interface available in Ukrainian and English |
-| 💾 **Auto-Backup Cache** | Progress is cached during processing to prevent data loss |
-| 🚀 **Auto-Open** | Automatically opens the saved document after creation |
+## 🌐 English
 
 ---
 
-### 🎯 Supported Translation Languages
+### 🔍 What is this?
 
-| Language | Code |
-|----------|------|
-| Українська (Ukrainian) | `uk` |
-| English | `en` |
-| Polski (Polish) | `pl` |
-| Deutsch (German) | `de` |
-| Français (French) | `fr` |
-| Español (Spanish) | `es` |
+**Treasury of Knowledge** is a powerful desktop application built with **Python**, **CustomTkinter**, and **Selenium** that lets you **bypass paywalls**, **circumvent geo-restrictions**, and **automatically translate** articles from any media outlet in the world — saving them as beautifully formatted **DOCX** or **PDF** files.
+
+No subscriptions. No restrictions. No compromises.
+
+> Paste a link → Get a perfectly formatted, translated document on your desktop.
+
+---
+
+### ⚡ Features
+
+| | Feature | Description |
+|---|---|---|
+| 🎯 | **Sniper Parsing** | Algorithmically locates the `<article>` container, surgically ignores site menus, and strips all spam — "related articles", "subscribe to newsletter" blocks, ads, and other noise. Pure content only. |
+| 🧠 | **Smart Metadata** | Extracts the real author, publication date, subtitle, and **Hero Image** by mining hidden SEO data layers (JSON-LD & OpenGraph) embedded in every modern website. |
+| 🖼️ | **Modern Media Engine** | On-the-fly conversion of **WebP** & **AVIF** images to **JPEG** via Pillow for flawless Word compatibility. Extracts video preview thumbnails and inserts clickable links. |
+| 🔽 | **System Tray Mode** | Minimize to the system tray (near the clock). Zero resource consumption while idle in the background. |
+| 📋 | **Quick Menu (Clipboard)** | Copy a link → Click "Digitize from Clipboard" in the tray → The app silently parses the article in the background and sends you a **Windows push notification** when done. |
+| 🚀 | **Smart Launcher (`Start.bat`)** | No terminal knowledge required. Just double-click `Start.bat`. It auto-checks & installs dependencies, **creates a beautiful shortcut with the app icon on your Desktop**, shows a system MessageBox confirmation, and launches the app — no ugly console windows. |
+| 🔎 | **DPI Awareness** | Crystal-clear, non-blurry fonts on modern high-DPI monitors (Windows 10/11) powered by native `ctypes` API calls. |
+| 🛡️ | **Armored Architecture** | **Anti-crash** protection — gracefully handles broken/malformed websites. **Anti-bot** shield — bypasses Cloudflare protection when downloading images. |
+| 🥚 | **The Soul of the App** | Over **15 hidden Easter Eggs** react to your actions — funny messages triggered by specific clicks, links, or even the time of day. Can you find them all? |
+| 🌍 | **Bilingual Interface** | Full UI in **Ukrainian** and **English**. |
+| 📖 | **Bilingual Save Mode** | Save articles as **Original + Translation** side by side in a single document. |
+| 📑 | **Auto Table of Contents** | Automatically generated TOC for long-form articles. |
+| ⏱️ | **Reading Time Estimate** | Know how long an article will take to read before you start. |
+| 🌗 | **Dark / Light Themes** | Switch between dark and light mode for comfortable reading at any hour. |
+| 🗣️ | **6 Translation Languages** | Українська · English · Polski · Deutsch · Français · Español |
 
 ---
 
 ### ⚙️ How It Works
 
+<div align="center">
+
 ```
-┌─────────────────────────────────────────────────────┐
-│  1. 🔗 You paste a URL (or multiple URLs)           │
-│                    ↓                                 │
-│  2. 🌐 Hidden browser opens the page                │
-│     (JavaScript disabled → bypasses blockers)        │
-│                    ↓                                 │
-│  3. 🧹 Reader Mode extracts pure article content    │
-│     (removes ads, menus, popups)                     │
-│                    ↓                                 │
-│  4. 🧠 Analyzes structure: headings, paragraphs,    │
-│     lists, images, blockquotes                       │
-│                    ↓                                 │
-│  5. 🌍 Each paragraph is translated via selected     │
-│     engine (Google/Microsoft with fallback)          │
-│                    ↓                                 │
-│  6. 📄 Assembles a formatted DOCX/PDF document      │
-│     with TOC, images, and metadata                   │
-│                    ↓                                 │
-│  7. ✅ Saves to your chosen folder & auto-opens      │
-└─────────────────────────────────────────────────────┘
+  ┌─────────────────────────────────┐
+  │  📋  Paste an article URL       │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  🌐  Selenium loads the page    │
+  │      (bypasses paywall &        │
+  │       geo-restrictions)         │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  🎯  Sniper Parsing extracts    │
+  │      pure article content       │
+  │      (no ads, no spam)          │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  🧠  Smart Metadata finds       │
+  │      author, date, hero image   │
+  │      via JSON-LD & OpenGraph    │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  🌍  Auto-translation to your   │
+  │      chosen language            │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  🖼️  Images converted           │
+  │      (WebP/AVIF → JPEG)        │
+  └────────────────┬────────────────┘
+                   ▼
+  ┌─────────────────────────────────┐
+  │  📄  Beautiful DOCX or PDF      │
+  │      saved to your computer     │
+  └────────────────┬────────────────┘
+                   ▼
+            ✅  D O N E !
 ```
+
+</div>
 
 ---
 
-### 🛠️ Installation
+### 📥 Installation
 
-#### Prerequisites
+> **It's literally one click.**
 
-- **Python 3.9+**
-- **Microsoft Edge** browser installed
-- **Microsoft Word** (required only for PDF conversion via `docx2pdf`)
+#### Windows (Recommended)
 
-#### Step 1: Clone the repository
+1. **Download** or **clone** this repository:
+   ```bash
+   git clone https://github.com/your-username/treasury-of-knowledge.git
+   ```
+2. **Double-click** `Start.bat`
 
-```bash
-git clone https://github.com/Maksum867/TreasuryOfKnowledge.git
-cd treasury-of-knowledge
-```
+That's it. The smart launcher will:
+- ✅ Check if Python 3.9+ is installed
+- ✅ Automatically install all required dependencies
+- ✅ Create a **beautiful shortcut** with the app icon on your **Desktop**
+- ✅ Show a system notification confirming everything is ready
+- ✅ Launch the app silently — no console windows, no terminal
 
-#### Step 2: Install dependencies
+> 💡 **You don't need to know what a terminal is.** Just click `Start.bat` and the magic handles the rest.
 
-```bash
-pip install -r requirements.txt
-```
+#### macOS / Manual
 
-#### Step 3: Run the application
-
-```bash
-python main.py
-```
-
----
-
-### 📦 Dependencies
-
-```
-customtkinter
-selenium
-beautifulsoup4
-lxml
-python-docx
-deep-translator
-docx2pdf
-plyer
-requests
-readability-lxml
-```
-
-<details>
-<summary>📋 Create requirements.txt</summary>
-
-```
-customtkinter>=5.0
-selenium>=4.0
-beautifulsoup4>=4.12
-lxml>=4.9
-python-docx>=0.8
-deep-translator>=1.11
-docx2pdf>=0.4
-plyer>=2.1
-requests>=2.28
-readability-lxml>=0.8
-```
-
-</details>
+1. Make sure you have **Python 3.9+** installed.
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run:
+   ```bash
+   python main.py
+   ```
 
 ---
 
-### 📸 Screenshots
+### 💬 Feedback
 
-<details>
-<summary>🖥️ Click to see the interface</summary>
-
-```
-┌──────────────────────────────────────────┐
-│                    ⚙️                    │
-│                  🏛️                      │
-│         Скарбниця Знань                  │
-│                                          │
-│  ┌────────────────────────────────────┐  │
-│  │ Paste URLs here...                │  │
-│  │                                    │  │
-│  └────────────────────────────────────┘  │
-│                                          │
-│  ████████████████████░░░░░  75%          │
-│                                          │
-│  📜 Processing element 12 of 16...       │
-│                                          │
-│  ┌──────────────┐  ┌──────────────┐      │
-│  │ DIGITIZE TO  │  │   CANCEL     │      │
-│  │   ARCHIVE    │  │              │      │
-│  └──────────────┘  └──────────────┘      │
-└──────────────────────────────────────────┘
-```
-
-</details>
-
----
-
-### 🗂️ Project Structure
-
-```
-treasury-of-knowledge/
-├── main.py              # Main application file
-├── settings.json        # User settings (auto-generated)
-├── backup_cache/        # Translation cache directory
-├── requirements.txt     # Python dependencies
-├── LICENSE              # Project license
-└── README.md            # This file
-```
+The app has a built-in **Feedback button** — feel free to report bugs, suggest features, or just say hello. Your voice shapes the future of Treasury of Knowledge.
 
 ---
 
 ### ⚠️ Disclaimer
 
-This tool is intended for **personal educational use only**. The author does not encourage copyright infringement. Please respect content creators and use this tool responsibly. If you find an article valuable, consider supporting its author.
-
----
-
-### 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+> **Treasury of Knowledge** is an educational and research tool designed for **personal use only**.
+>
+> It is intended to help users access publicly available information for learning, study, and archival purposes. The developers do **not** encourage or condone copyright infringement. Please **respect the intellectual property** of journalists and content creators. If you find value in an article — **consider supporting the original publisher**.
+>
+> Use responsibly. You are solely responsible for how you use this software.
 
 ---
 
 ### ☕ Support the Author
 
-If this app saved you time and effort, you can buy me a coffee:
+If this project saved you time, gave you access to knowledge, or simply made you smile with an Easter Egg — consider buying me a coffee:
 
-[![Monobank](https://img.shields.io/badge/Monobank-Donate-yellow?style=for-the-badge)](https://send.monobank.ua/jar/328DrBEZXY)
+<div align="center">
+
+[![Donate](https://img.shields.io/badge/💛_Buy_Me_a_Coffee-Support-FFDD00?style=for-the-badge)](https://send.monobank.ua/jar/328DrBEZXY)
+
+**[☕ send.monobank.ua/jar/328DrBEZXY](https://send.monobank.ua/jar/328DrBEZXY)**
+
+</div>
 
 ---
 
@@ -238,173 +183,159 @@ If this app saved you time and effort, you can buy me a coffee:
 
 ## 🇺🇦 Українська
 
-### 📖 Що це таке?
+---
 
-**Скарбниця Знань** — це десктопний додаток, що дає вам вільний доступ до інформації без кордонів та обмежень.
+### 🔍 Що це таке?
 
-Він дозволяє читати статті, журнали та новини, які:
-- 🚫 **Заблоковані** у вашій країні (гео-блокування)
-- 💰 **Приховані за пейволом** (потребують платної підписки)
-- 🌐 **Написані мовою**, якої ви не розумієте
+**Treasury of Knowledge (Скарбниця Знань)** — це потужна десктопна програма, створена на **Python**, **CustomTkinter** та **Selenium**, яка дозволяє **обходити пейволи** (платні підписки), **геоблокування** та **автоматично перекладати** статті з будь-яких світових ЗМІ — зберігаючи їх у красиво оформлені файли **DOCX** або **PDF**.
 
-Програма алгоритмічно «витягує» прихований текст із сайту, перекладає його на зручну для вас мову та зберігає у вигляді чистого, акуратного документа на вашому комп'ютері.
+Без підписок. Без обмежень. Без компромісів.
 
-> **Знання мають бути безкоштовними та доступними для кожного.**
+> Вставив посилання → Отримав ідеально оформлений, перекладений документ на Робочому столі.
 
 ---
 
-### ✨ Можливості
+### ⚡ Можливості
 
-| Функція | Опис |
-|---------|------|
-| 🔓 **Обхід блокувань та пейволів** | Читайте платні та обмежені статті безкоштовно |
-| 🌍 **Автоматичний переклад** | Google або Microsoft перекладач (з автоматичною підстраховкою) |
-| 📄 **Експорт у DOCX та PDF** | Збереження у професійних форматах документів |
-| 🧹 **Інтелектуальний режим читання** | Автоматичне видалення реклами, банерів, попапів та меню |
-| 📑 **Автоматичний Зміст** | Генерація змісту для довгих статей |
-| 📖 **Двомовний режим** | Оригінал + переклад паралельно по абзацах |
-| 🖼️ **Завантаження зображень** | Вбудовування картинок зі статті (або пропуск для швидкості) |
-| ⏱️ **Оцінка часу читання** | Показує орієнтовний час на читання кожної статті |
-| 📦 **Пакетна обробка** | Обробка кількох посилань одночасно (кожне з нового рядка) |
-| 🔗 **Метадані джерела** | Збереження оригінального посилання та дати в кінці документа |
-| 🌓 **Темна та світла тема** | Комфортний інтерфейс для будь-якого освітлення |
-| 🌐 **Двомовний інтерфейс** | Інтерфейс українською та англійською |
-| 💾 **Кешування прогресу** | Прогрес зберігається під час обробки для запобігання втраті даних |
-| 🚀 **Автовідкриття** | Автоматичне відкриття збереженого документа після створення |
-
----
-
-### 🎯 Підтримувані мови перекладу
-
-| Мова | Код |
-|------|-----|
-| Українська | `uk` |
-| English (Англійська) | `en` |
-| Polski (Польська) | `pl` |
-| Deutsch (Німецька) | `de` |
-| Français (Французька) | `fr` |
-| Español (Іспанська) | `es` |
+| | Функція | Опис |
+|---|---|---|
+| 🎯 | **Снайперський парсинг** | Алгоритмічно знаходить контейнер `<article>`, жорстко ігнорує меню сайту та видаляє весь спам — «схожі новини», «підпишіться на розсилку», рекламу. Тільки чистий контент. |
+| 🧠 | **Розумна метадата** | Витягує справжнього автора, дату публікації, підзаголовок та **Головну обкладинку** (Hero Image) через приховані SEO-шари сайтів (JSON-LD та OpenGraph). |
+| 🖼️ | **Сучасне медіа** | Конвертація "на льоту" зображень **WebP** та **AVIF** у **JPEG** через Pillow для ідеальної сумісності з Word. Витягує прев'ю-картинки з відео та вставляє клікабельні посилання. |
+| 🔽 | **Фоновий режим (System Tray)** | Програма згортається у системний трей (біля годинника). Нуль споживання ресурсів у фоновому режимі. |
+| 📋 | **Блискавичне меню (Буфер обміну)** | Скопіюй посилання → Клікни "Оцифрувати з буфера" у треї → Програма тихо парсить статтю у фоні та надсилає **push-сповіщення Windows** про результат. |
+| 🚀 | **Розумний лаунчер (`Start.bat`)** | Жодних знань консолі не потрібно. Просто двічі клікни `Start.bat`. Скрипт сам перевірить та встановить залежності, **створить красивий ярлик з іконкою на Робочому столі**, покаже системне MessageBox-повідомлення та запустить програму без чорних вікон консолі. |
+| 🔎 | **DPI Awareness** | Ідеально чіткі, не розмиті шрифти на сучасних моніторах у Windows 10/11 завдяки нативному виклику `ctypes`. |
+| 🛡️ | **Броньована архітектура** | **Anti-crash** захист — програма грамотно обробляє "зламані" сайти і не падає. **Anti-bot** щит — обходить захист Cloudflare при скачуванні зображень. |
+| 🥚 | **"Душа програми"** | Понад **15 прихованих пасхалок** (Easter Eggs), які реагують на ваші дії — смішні повідомлення при певних кліках, посиланнях чи навіть залежно від часу доби. Знайдете всі? |
+| 🌍 | **Двомовний інтерфейс** | Повний UI **Українською** та **Англійською** мовами. |
+| 📖 | **Двомовне збереження** | Збереження статті як **Оригінал + Переклад** в одному документі. |
+| 📑 | **Авто-зміст (TOC)** | Автоматично згенерований зміст для довгих статей. |
+| ⏱️ | **Оцінка часу читання** | Дізнайтеся, скільки часу займе читання, ще до початку. |
+| 🌗 | **Темна / Світла теми** | Перемикайтесь між темною та світлою темою для комфортного читання в будь-який час. |
+| 🗣️ | **6 мов перекладу** | Українська · English · Polski · Deutsch · Français · Español |
 
 ---
 
 ### ⚙️ Як це працює
 
+<div align="center">
+
 ```
-┌─────────────────────────────────────────────────────┐
-│  1. 🔗 Ви вставляєте посилання (одне або кілька)    │
-│                    ↓                                 │
-│  2. 🌐 Прихований браузер відкриває сторінку         │
-│     (JavaScript вимкнено → обходить блокувальники)   │
-│                    ↓                                 │
-│  3. 🧹 Режим читання видобуває чистий контент        │
-│     (видаляє рекламу, меню, попапи)                  │
-│                    ↓                                 │
-│  4. 🧠 Аналізує структуру: заголовки, абзаци,       │
-│     списки, зображення, цитати                       │
-│                    ↓                                 │
-│  5. 🌍 Кожен абзац перекладається через обраний      │
-│     рушій (Google/Microsoft з підстраховкою)         │
-│                    ↓                                 │
-│  6. 📄 Збирає форматований документ DOCX/PDF         │
-│     зі Змістом, картинками та метаданими             │
-│                    ↓                                 │
-│  7. ✅ Зберігає в обрану папку та автоматично         │
-│     відкриває файл                                   │
-└─────────────────────────────────────────────────────┘
+  ┌──────────────────────────────────┐
+  │  📋  Вставте посилання на статтю │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  🌐  Selenium завантажує сторінку│
+  │      (обходить пейвол та         │
+  │       геоблокування)             │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  🎯  Снайперський парсинг        │
+  │      витягує чистий контент      │
+  │      (без реклами, без спаму)    │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  🧠  Розумна метадата знаходить  │
+  │      автора, дату, обкладинку    │
+  │      через JSON-LD & OpenGraph   │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  🌍  Авто-переклад на обрану     │
+  │      мову                        │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  🖼️  Конвертація зображень       │
+  │      (WebP/AVIF → JPEG)         │
+  └────────────────┬─────────────────┘
+                   ▼
+  ┌──────────────────────────────────┐
+  │  📄  Красивий DOCX або PDF       │
+  │      збережено на ваш комп'ютер  │
+  └────────────────┬─────────────────┘
+                   ▼
+            ✅  Г О Т О В О !
 ```
+
+</div>
 
 ---
 
-### 🛠️ Встановлення
+### 📥 Встановлення
 
-#### Передумови
+> **Це буквально один клік.**
 
-- **Python 3.9+**
-- Встановлений браузер **Microsoft Edge**
-- **Microsoft Word** (потрібен лише для конвертації в PDF через `docx2pdf`)
+#### Windows (Рекомендовано)
 
-#### Крок 1: Клонуйте репозиторій
+1. **Завантажте** або **клонуйте** цей репозиторій:
+   ```bash
+   git clone https://github.com/your-username/treasury-of-knowledge.git
+   ```
+2. **Двічі клікніть** `Start.bat`
 
-```bash
-git clone https://github.com/Maksum867/TreasuryOfKnowledge.git
-cd treasury-of-knowledge
-```
+Це все. Розумний лаунчер сам:
+- ✅ Перевірить наявність Python 3.9+
+- ✅ Автоматично встановить усі необхідні бібліотеки
+- ✅ Створить **красивий ярлик** з іконкою програми на **Робочому столі**
+- ✅ Покаже системне сповіщення, що все готово
+- ✅ Запустить програму тихо — без консольних вікон, без терміналу
 
-#### Крок 2: Встановіть залежності
+> 💡 **Вам не потрібно знати, що таке термінал.** Просто клікніть `Start.bat` — і магія зробить все сама.
 
-```bash
-pip install -r requirements.txt
-```
+#### macOS / Вручну
 
-#### Крок 3: Запустіть додаток
-
-```bash
-python main.py
-```
-
----
-
-### 📦 Залежності
-
-```
-customtkinter
-selenium
-beautifulsoup4
-lxml
-python-docx
-deep-translator
-docx2pdf
-plyer
-requests
-readability-lxml
-```
+1. Переконайтеся, що у вас встановлено **Python 3.9+**.
+2. Встановіть залежності:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Запустіть:
+   ```bash
+   python main.py
+   ```
 
 ---
 
-### 🗂️ Структура проєкту
+### 💬 Зворотний зв'язок
 
-```
-treasury-of-knowledge/
-├── main.py              # Головний файл додатку
-├── settings.json        # Налаштування користувача (створюється автоматично)
-├── backup_cache/        # Директорія кешу перекладів
-├── requirements.txt     # Залежності Python
-├── LICENSE              # Ліцензія проєкту
-└── README.md            # Цей файл
-```
+У програмі є вбудована **кнопка Зворотного зв'язку** — повідомляйте про помилки, пропонуйте ідеї або просто скажіть привіт. Ваш голос формує майбутнє Скарбниці Знань.
 
 ---
 
 ### ⚠️ Відмова від відповідальності
 
-Цей інструмент призначений **виключно для особистого навчального використання**. Автор не заохочує порушення авторських прав. Будь ласка, поважайте авторів контенту та використовуйте цей інструмент відповідально. Якщо стаття виявилась для вас цінною, підтримайте її автора.
-
----
-
-### 🤝 Внесок у проєкт
-
-Внески вітаються! Ви можете:
-
-1. Зробити Fork репозиторію
-2. Створити гілку для нової функції (`git checkout -b feature/amazing-feature`)
-3. Зафіксувати зміни (`git commit -m 'Add amazing feature'`)
-4. Запушити гілку (`git push origin feature/amazing-feature`)
-5. Відкрити Pull Request
+> **Treasury of Knowledge** — це освітній та дослідницький інструмент, призначений **виключно для особистого використання**.
+>
+> Він створений, щоб допомогти користувачам отримувати доступ до публічно доступної інформації для навчання, вивчення та архівних цілей. Розробники **не заохочують і не підтримують** порушення авторських прав. Будь ласка, **поважайте інтелектуальну власність** журналістів і авторів контенту. Якщо стаття була для вас цінною — **підтримайте оригінальне видання**.
+>
+> Використовуйте відповідально. Ви несете повну відповідальність за те, як ви використовуєте цю програму.
 
 ---
 
 ### ☕ Підтримати автора
 
-Якщо цей додаток зекономив вам час та зусилля, ви можете пригостити мене кавою:
+Якщо цей проект зекономив вам час, дав доступ до знань або просто порадував пасхалкою — закиньте автору на каву:
 
-[![Monobank](https://img.shields.io/badge/Monobank-Підтримати-yellow?style=for-the-badge)](https://send.monobank.ua/jar/328DrBEZXY)
+<div align="center">
+
+[![Donate](https://img.shields.io/badge/💛_Закинути_на_каву-Підтримати-FFDD00?style=for-the-badge)](https://send.monobank.ua/jar/328DrBEZXY)
+
+**[☕ send.monobank.ua/jar/328DrBEZXY](https://send.monobank.ua/jar/328DrBEZXY)**
+
+</div>
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for free access to knowledge**
+**Made with ❤️ and ☕ in Ukraine**
 
-**Зроблено з ❤️ заради вільного доступу до знань**
+*Knowledge should be free. Always.*
 
 </div>
+```
