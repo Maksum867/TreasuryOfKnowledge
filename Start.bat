@@ -1,23 +1,21 @@
 @echo off
-chcp 65001 > nul
+title Treasury of Knowledge
 
-:: 1. Блискавична перевірка: чи є всі потрібні модулі? (Робиться за долі секунди)
+REM Quick check for required modules
 python -c "import customtkinter, selenium, bs4, docx, plyer, deep_translator, docx2pdf, readability, requests" 2>nul
 
-:: 2. Якщо хоча б одного модуля немає, запускаємо дозавантаження
 if %errorlevel% neq 0 (
     echo ===================================================
-    echo ⚙️ Скарбниця Знань: Налаштування середовища...
-    echo Виявлено відсутні компоненти. Завантажую необхідне...
+    echo Treasury of Knowledge: First run setup...
+    echo Installing missing libraries. Please wait...
     echo ===================================================
-    
-    :: pip сам розбереться: те що є - пропустить, чого немає - скачає
+
     pip install customtkinter selenium beautifulsoup4 python-docx plyer deep-translator docx2pdf readability-lxml requests
-    
-    echo.
-    echo ✅ Усі бібліотеки готові до роботи!
+
+    echo ===================================================
+    echo Setup complete! Starting program...
     timeout /t 2 >nul
 )
 
-:: 3. Запуск самої програми (без чорного вікна на фоні)
+REM Start the program and close the console
 start "" pythonw main.py
