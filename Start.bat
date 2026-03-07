@@ -1,58 +1,53 @@
 @echo off
-REM Вмикаємо підтримку UTF-8 (щоб українська мова відображалася коректно)
-chcp 65001 >nul
-title Treasury of Knowledge v5.0
-color 0E
+chcp 65001 > nul
+title Запуск Скарбниця Знань v6.0
 
-REM Переходимо в папку зі скриптом
+:: Переходимо в папку, де лежить цей бат-файл (щоб працювало з будь-якого місця)
 cd /d "%~dp0"
 
-echo ===================================================
-echo 🏛️ Treasury of Knowledge v5.0
-echo Перевірка системних вимог...
-echo ===================================================
+:: 1. Перевірка, чи є на ПК Python
+python --version >nul 2>&1
+if errorlevel 1 (
+    color 4F
+    echo [ПОМИЛКА] Python не знайдено на цьому комп'ютері!
+    echo.
+    echo Щоб програма працювала, вам потрібно встановити Python.
+    echo Завантажте його з сайту: https://www.python.org/downloads/
+    echo ВАЖЛИВО: При встановленні обов'язково поставте галочку "Add Python.exe to PATH"!
+    echo.
+    pause
+    exit /b
+)
 
-REM Перевірка наявності бібліотек
-python -c "import customtkinter, selenium, bs4, docx, plyer, deep_translator, docx2pdf, PIL, pystray, pyperclip" 2>nul
+:: 2. Перевірка першого запуску (встановлення бібліотек)
+if not exist ".venv\Scripts\python.exe" (
+    color 0B
+    echo =======================================================
+    echo    ПЕРШИЙ ЗАПУСК: Зачекайте, йде налаштування...
+    echo =======================================================
+    echo.
+    echo [1/3] Створення ізольованого середовища...
+    python -m venv .venv
 
-if %errorlevel% neq 0 (
-    echo [!] Виявлено перший запуск або відсутні модулі.
-    echo [~] Встановлюємо необхідні бібліотеки. Будь ласка, зачекайте...
-    echo ===================================================
+    echo [2/3] Підготовка до встановлення...
+    .venv\Scripts\python.exe -m pip install --upgrade pip >nul 2>&1
 
-    if exist requirements.txt (
-        pip install -r requirements.txt
+    if exist "requirements.txt" (
+        echo [3/3] Завантаження компонентів (PyQt6, Selenium тощо)...
+        echo Це може зайняти хвилину, не закривайте вікно!
+        .venv\Scripts\python.exe -m pip install -r requirements.txt
+        echo.
+        color 0A
+        echo [УСПІХ] Усе готово! Запускаю програму...
+        timeout /t 3 >nul
     ) else (
-        pip install customtkinter selenium beautifulsoup4 lxml python-docx plyer deep-translator docx2pdf requests Pillow pystray pyperclip
+        color 4F
+        echo [ПОМИЛКА] Файл requirements.txt не знайдено! Програма не може встановити залежності.
+        pause
+        exit /b
     )
-
-    echo ===================================================
-    echo [V] Усі залежності успішно встановлено!
 )
 
-REM Автоматичне створення красивого ярлика
-set SHORTCUT="%USERPROFILE%\Desktop\Скарбниця Знань.lnk"
-if not exist %SHORTCUT% (
-    echo [~] Створення ярлика на Робочому столі...
-
-    echo Set oWS = WScript.CreateObject^("WScript.Shell"^) > CreateShortcut.vbs
-    echo sLinkFile = %SHORTCUT% >> CreateShortcut.vbs
-    echo Set oLink = oWS.CreateShortcut^(sLinkFile^) >> CreateShortcut.vbs
-    echo oLink.TargetPath = "%~dp0Start.bat" >> CreateShortcut.vbs
-    echo oLink.WorkingDirectory = "%~dp0" >> CreateShortcut.vbs
-    echo oLink.IconLocation = "%~dp0icon.ico" >> CreateShortcut.vbs
-    echo oLink.Save >> CreateShortcut.vbs
-
-    REM Створюємо системне віконце повідомлення для користувача!
-    echo MsgBox "Ярлик програми успішно створено на Вашому Робочому столі!" ^& vbCrLf ^& "Наступного разу просто запускайте Скарбницю Знань звідти.", 64, "Скарбниця Знань" >> CreateShortcut.vbs
-
-    cscript //nologo CreateShortcut.vbs
-    del CreateShortcut.vbs
-    echo [V] Ярлик створено!
-)
-
-echo [V] Запуск програми...
-timeout /t 2 >nul
-
-REM Запуск програми без чорного вікна консолі на фоні
-start "" pythonw main.py
+:: 3. Звичайний запуск програми
+:: Використовуємо pythonw.exe, щоб сховати чорне вікно консолі під час роботи програми
+start "" ".venv\Scripts\pythonw.exe" main.py
