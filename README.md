@@ -395,25 +395,9 @@ For the most attentive users, the app hides over **15 secret easter eggs**. Can 
 
 ## 🖼️ Screenshots
 
-<div align="center">
 
-> ⚠️ *Replace the placeholders below with actual screenshots of your application.*
 
-| Dark Theme 🌙 | Light Theme ☀️ |
-|:---:|:---:|
-| ![Dark Theme](docs/screenshots/dark_theme.png) | ![Light Theme](docs/screenshots/light_theme.png) |
 
-| Parsing Process ⚙️ | Result — DOCX 📄 |
-|:---:|:---:|
-| ![Parsing](docs/screenshots/parsing_process.png) | ![Result](docs/screenshots/docx_result.png) |
-
-| System Tray 🔲 | Bilingual Document 🌍 |
-|:---:|:---:|
-| ![Tray](docs/screenshots/system_tray.png) | ![Bilingual](docs/screenshots/bilingual_doc.png) |
-
-</div>
-
-<br>
 
 ## ⚡ Quick Start
 
