@@ -1,53 +1,34 @@
 @echo off
-chcp 65001 > nul
-title Запуск Скарбниця Знань v6.0
-
-:: Переходимо в папку, де лежить цей бат-файл (щоб працювало з будь-якого місця)
+:: Go to the exact folder where this .bat file is located
 cd /d "%~dp0"
 
-:: 1. Перевірка, чи є на ПК Python
-python --version >nul 2>&1
-if errorlevel 1 (
-    color 4F
-    echo [ПОМИЛКА] Python не знайдено на цьому комп'ютері!
+:: Check if the virtual environment folder exists
+IF NOT EXIST ".venv\" (
+    echo ========================================================
+    echo    * Treasury of Knowledge: First Run Setup *
+    echo ========================================================
     echo.
-    echo Щоб програма працювала, вам потрібно встановити Python.
-    echo Завантажте його з сайту: https://www.python.org/downloads/
-    echo ВАЖЛИВО: При встановленні обов'язково поставте галочку "Add Python.exe to PATH"!
-    echo.
-    pause
-    exit /b
-)
-
-:: 2. Перевірка першого запуску (встановлення бібліотек)
-if not exist ".venv\Scripts\python.exe" (
-    color 0B
-    echo =======================================================
-    echo    ПЕРШИЙ ЗАПУСК: Зачекайте, йде налаштування...
-    echo =======================================================
-    echo.
-    echo [1/3] Створення ізольованого середовища...
+    echo [1/3] Creating isolated virtual environment (.venv)...
     python -m venv .venv
 
-    echo [2/3] Підготовка до встановлення...
-    .venv\Scripts\python.exe -m pip install --upgrade pip >nul 2>&1
+    echo.
+    echo [2/3] Updating package installer (pip)...
+    ".venv\Scripts\python.exe" -m pip install --upgrade pip --quiet
 
-    if exist "requirements.txt" (
-        echo [3/3] Завантаження компонентів (PyQt6, Selenium тощо)...
-        echo Це може зайняти хвилину, не закривайте вікно!
-        .venv\Scripts\python.exe -m pip install -r requirements.txt
-        echo.
-        color 0A
-        echo [УСПІХ] Усе готово! Запускаю програму...
-        timeout /t 3 >nul
-    ) else (
-        color 4F
-        echo [ПОМИЛКА] Файл requirements.txt не знайдено! Програма не може встановити залежності.
-        pause
-        exit /b
-    )
+    echo.
+    echo [3/3] Installing required libraries from requirements.txt...
+    ".venv\Scripts\pip.exe" install -r requirements.txt
+
+    echo.
+    echo ========================================================
+    echo  OK! Installation successfully completed!
+    echo  Starting the application...
+    echo ========================================================
+    timeout /t 3 > nul
 )
 
-:: 3. Звичайний запуск програми
-:: Використовуємо pythonw.exe, щоб сховати чорне вікно консолі під час роботи програми
-start "" ".venv\Scripts\pythonw.exe" main.py
+:: Run the app in the background using pythonw.exe (no terminal window)
+start "" ".venv\Scripts\pythonw.exe" "main.py"
+
+:: Close the .bat file immediately
+exit

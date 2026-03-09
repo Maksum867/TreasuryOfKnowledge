@@ -65,7 +65,7 @@ class TreasuryApp(QMainWindow):
         super().__init__()
 
         # ── Конфігурація вікна ──
-        self.setWindowTitle("Скарбниця Знань v6.0")
+        self.setWindowTitle("Скарбниця Знань v6.1")
         self.setMinimumSize(1000, 900)
         self.resize(1000, 900)
 
@@ -231,7 +231,7 @@ class TreasuryApp(QMainWindow):
         layout.addWidget(self.main_title_label)
 
         # ── Підзаголовок (версія) ──
-        version_label = QLabel("v6.0")
+        version_label = QLabel("v6.1")
         version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         version_label.setFont(QFont(Theme.FONT_UI, 14))
         version_label.setStyleSheet(f"color: {Theme.TEXT_MUTED};")
@@ -546,7 +546,7 @@ class TreasuryApp(QMainWindow):
         scroll_layout.addSpacing(20)
 
         # ── Premium Easter Egg ──
-        premium_btn = QPushButton("v6.0 👑")
+        premium_btn = QPushButton("v6.1 👑")
         premium_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         premium_btn.setFont(QFont(Theme.FONT_UI, 11))
         premium_btn.setStyleSheet(f"""
@@ -1157,7 +1157,7 @@ class TreasuryApp(QMainWindow):
     def _on_feedback_click(self):
         """Зворотний зв'язок"""
         email = "treasuryofknowledge26@gmail.com"
-        subject = "Відгук про Скарбницю Знань v6.0"
+        subject = "Відгук про Скарбницю Знань v6.1"
 
         # Копіюємо в буфер
         if pyperclip:

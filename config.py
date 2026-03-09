@@ -236,7 +236,7 @@ GLOBAL_STYLESHEET = f"""
 
 LOCALES = {
     "uk": {
-        "title": "Скарбниця Знань v6.0",
+        "title": "Скарбниця Знань v6.1",
         "placeholder": "Вставте посилання (можна кілька, кожне з нового рядка)...",
         "status_wait": "Очікування посилань...",
         "btn_digitize": "ОЦИФРУВАТИ В АРХІВ",
@@ -330,7 +330,7 @@ LOCALES = {
         "qm_tray_open": "Відкрити меню",
     },
     "en": {
-        "title": "Treasury of Knowledge v6.0",
+        "title": "Treasury of Knowledge V6.1",
         "placeholder": "Paste URLs here (one per line)...",
         "status_wait": "Waiting for URLs...",
         "btn_digitize": "DIGITIZE TO ARCHIVE",
