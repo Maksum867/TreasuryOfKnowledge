@@ -125,27 +125,7 @@
 <!-- СКРІНШОТИ -->
 <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
 
-## 🖼️ Скріншоти
 
-<div align="center">
-
-> ⚠️ *Замініть плейсхолдери нижче на реальні скріншоти вашого додатку.*
-
-| Темна тема 🌙 | Світла тема ☀️ |
-|:---:|:---:|
-| ![Dark Theme](docs/screenshots/dark_theme.png) | ![Light Theme](docs/screenshots/light_theme.png) |
-
-| Процес парсингу ⚙️ | Результат — DOCX 📄 |
-|:---:|:---:|
-| ![Parsing](docs/screenshots/parsing_process.png) | ![Result](docs/screenshots/docx_result.png) |
-
-| System Tray 🔲 | Двомовний документ 🌍 |
-|:---:|:---:|
-| ![Tray](docs/screenshots/system_tray.png) | ![Bilingual](docs/screenshots/bilingual_doc.png) |
-
-</div>
-
-<br>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
 <!-- ШВИДКИЙ СТАРТ -->
